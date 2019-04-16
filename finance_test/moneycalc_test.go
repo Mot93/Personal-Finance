@@ -58,7 +58,7 @@ func TestMonthSince(t *testing.T) {
 		{ // 31 of febraruarhy becomes the 3 of march
 			start,
 			time.Date(2017, time.February, 31, 0, 0, 0, 0, loc),
-			15*12 + 2 + 6,
+			6 + 15*12 + 2,
 		},
 	}
 	for _, table := range tables {
