@@ -75,18 +75,32 @@ func NewSavings() Savings {
 	return Savings{savings: &sa}
 }
 
-// GetAll returns all the savings
-func (sa Savings) GetAll() {
-	sqlSavings := `
-	SELECT * FROM savings
-	ORDER BY name
-	`
+func (sa Savings) Get(sqlSavings string) {
 	(*sa.savings) = make([]Saving, 0, 0)
 	ids, am := retriveManyAmounts(sqlSavings, SavingsNames["name"])
 	for i := 0; i < len(ids); i++ {
 		s := Saving{id: &ids[i], a: &am[i]}
 		(*sa.savings) = append(*sa.savings, s)
 	}
+}
+
+// GetAll returns all the savings
+func (sa Savings) GetAll() {
+	sqlSavings := `
+	SELECT * FROM savings
+	ORDER BY name
+	`
+	sa.Get(sqlSavings)
+}
+
+// GetNonRecurrent returns all the savings
+func (sa Savings) GetNonRecurrent() {
+	sqlSavings := `
+	SELECT * FROM savings
+	WHERE recurrency = 0
+	ORDER BY name
+	`
+	sa.Get(sqlSavings)
 }
 
 // Len TODO:
@@ -116,6 +130,17 @@ func (sa Savings) Delete(s Found) {
 			sa.GetAll()
 		}
 	}
+}
+
+// Sum TODO:
+func (sa Savings) Sum() float32 {
+	var t float32 = 0.0
+	if sa.Len() > 0 {
+		for _, s := range *sa.savings {
+			t += (s.ReturnAmount()).sum
+		}
+	}
+	return t
 }
 
 // String TODO:

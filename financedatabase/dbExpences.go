@@ -77,13 +77,8 @@ func NewExpences() Expences {
 	return Expences{expences: &ex}
 }
 
-// GetAll return all the expences contained in the db
-// Ordered by start from the eldest to the most recent
-func (ex Expences) GetAll() {
-	sqlExpences := `
-	SELECT * FROM expences
-	ORDER BY name
-	`
+// Get TODO:
+func (ex Expences) Get(sqlExpences string) {
 	*ex.expences = make([]Expence, 0, 0)
 	ids, am := retriveManyAmounts(sqlExpences, ExpencesNames["name"])
 	for i := 0; i < len(ids); i++ {
@@ -91,6 +86,26 @@ func (ex Expences) GetAll() {
 		//e.constructor(ids[i], am[i])
 		*ex.expences = append(*ex.expences, e)
 	}
+}
+
+// GetAll return all the expences contained in the db
+// Ordered by start from the eldest to the most recent
+func (ex Expences) GetAll() {
+	sqlExpences := `
+	SELECT * FROM expences
+	ORDER BY name
+	`
+	ex.Get(sqlExpences)
+}
+
+// GetNonRecurrent TODO:
+func (ex Expences) GetNonRecurrent() {
+	sqlExpences := `
+	SELECT * FROM expences
+	WHERE recurrency = 0
+	ORDER BY name
+	`
+	ex.Get(sqlExpences)
 }
 
 // Len return the number of Expence
@@ -117,6 +132,17 @@ func (ex Expences) Delete(e Found) {
 			ex.GetAll()
 		}
 	}
+}
+
+// Sum TODO:
+func (ex Expences) Sum() float32 {
+	var t float32 = 0.0
+	if ex.Len() > 0 {
+		for _, e := range *ex.expences {
+			t += (e.ReturnAmount()).sum
+		}
+	}
+	return t
 }
 
 // String TODO: all the documentation

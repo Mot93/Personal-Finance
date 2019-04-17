@@ -2,13 +2,9 @@ package financecalc
 
 import (
 	"time"
-)
 
-// Total returns the total sum of money that had to be saved
-func Total() float32 {
-	result := Expences(StartDate(), time.Now())
-	return result
-}
+	"github.com/Mot93/Personal-Finance/financedatabase"
+)
 
 // StartDate return the time.Time to start counting
 func StartDate() time.Time {
@@ -16,7 +12,16 @@ func StartDate() time.Time {
 	return time.Date(2018, time.July, 1, 0, 0, 0, 0, loc)
 }
 
-// Return the total of money that has to be spent in expences from 
-func Expences(start, end time.Time) float32 {
-	financedatabase.
+// NonRecurring TODO:
+func NonRecurring(fo financedatabase.Founds) float32 {
+	fo.GetNonRecurrent()
+	if fo.Len() > 0 {
+		return fo.Sum()
+	}
+	return 0.0
 }
+
+// Recurring TODO:
+/*func Recurring(fo financedatabase.Founds) float32 {
+
+}*/

@@ -109,7 +109,7 @@ func retriveSingleAmount(sqlQuery string, readingElement string) (id int, a Amou
 	row.Next()
 	err2 := row.Scan(&id, &a.name, &a.sum, &a.start, &a.end, &a.category, &a.recurrency)
 	if err2 != nil {
-		panic(fmt.Errorf("Error reading %d by id: %v", readingElement, err2))
+		panic(fmt.Errorf("Error reading %v by id: %v", readingElement, err2))
 	}
 	return id, a
 }

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Mot93/personalfinance/financedatabase"
+	"github.com/Mot93/Personal-Finance/financedatabase"
 )
 
 // >sqlite3 testfinance.db
