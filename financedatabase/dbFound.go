@@ -16,10 +16,11 @@ type Founds interface {
 	Get(string)
 	// GetAll loads all the Expences/Savings in the DB
 	GetAll()
+	GetRecurrent()
 	GetNonRecurrent()
 	//GetRecurrent()
 	Len() int
-	ReturnElement(int) Found
+	GetElement(int) Found
 	// Add an Expences/Savings and then call GetAll
 	Add(Amount)
 	Delete(Found)

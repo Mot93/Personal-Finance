@@ -98,6 +98,11 @@ func (ex Expences) GetAll() {
 	ex.Get(sqlExpences)
 }
 
+// GetRecurent returns all the recurring expences
+func (ex Expences) GetRecurrent() {
+
+}
+
 // GetNonRecurrent TODO:
 func (ex Expences) GetNonRecurrent() {
 	sqlExpences := `
@@ -114,7 +119,7 @@ func (ex Expences) Len() int {
 }
 
 // ReturnElement returns an expence at the specified position
-func (ex Expences) ReturnElement(i int) Found {
+func (ex Expences) GetElement(i int) Found {
 	return (*ex.expences)[i]
 }
 

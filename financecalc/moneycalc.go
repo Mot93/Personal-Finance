@@ -12,8 +12,8 @@ func StartDate() time.Time {
 	return time.Date(2018, time.July, 1, 0, 0, 0, 0, loc)
 }
 
-// NonRecurring TODO:
-func NonRecurring(fo financedatabase.Founds) float32 {
+// SumNonRecurring TODO:
+func SumNonRecurring(fo financedatabase.Founds) float32 {
 	fo.GetNonRecurrent()
 	if fo.Len() > 0 {
 		return fo.Sum()
@@ -21,7 +21,18 @@ func NonRecurring(fo financedatabase.Founds) float32 {
 	return 0.0
 }
 
-// Recurring TODO:
-/*func Recurring(fo financedatabase.Founds) float32 {
+// SingleRecurrency return the total sum of a recurrent saving/expence
+// TODO:
+func SingleRecurrency(fo financedatabase.Found) float32 {
+	return 2
+}
 
-}*/
+// SumRecurring returns the summ of all recurrent savings/expences
+func SumRecurring(fo financedatabase.Founds) float32 {
+	var t float32 = 0.0
+	fo.GetRecurrent()
+	for i := 0; i < fo.Len(); i++ {
+		t += SingleRecurrency(fo.GetElement(i))
+	}
+	return t
+}
