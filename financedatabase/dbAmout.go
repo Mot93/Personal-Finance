@@ -2,22 +2,33 @@ package financedatabase
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
-// amount contains the data of both savings and expences
-// The two have identical structur but serve two differen purpose
+// Amount is a collection of data about a movement of money
+// It rapresent a row in bothe the table Expences and Savings
+// Amount contain the basic data needed by both Expences and Savings, where:
+// 		Expences move money outside of the money pool
+//		Savings move money inside of the money pool
 type Amount struct {
-	name       string
-	sum        float32
-	start      string
-	end        string
-	category   string
+	// name name of the transaction
+	name string
+	// sum of the transaction
+	sum float32
+	// start rapresent when the recurrency has to start
+	// alternatively it rapresent the date of the transaction
+	start string
+	// end rapresent when the transaction stopts it's repetition
+	end string
+	// categories are stored from the database, never set it manually
+	category string
+	// recurrency rapresnet the amount of days
+	// set to -1 for a monthly reccurence
 	recurrency int
 }
 
-// equals will compare that each field of Expence are equals
-// Except for the field ID
+// equals will assert that all parameters of two Amounts are equal
 func (a Amount) equals(a2 Amount) bool {
 	if strings.Compare(a.name, a2.name) == 0 && a.sum == a2.sum && strings.Compare(a.start, a2.start) == 0 && strings.Compare(a.end, a2.end) == 0 {
 		return true
@@ -25,15 +36,21 @@ func (a Amount) equals(a2 Amount) bool {
 	return false
 }
 
+// Constructor fills the struct Amount imposing the constraint the data has to follow
 func (a *Amount) Constructor(name string, sum float32, start string, end string, category string, recurrency int) {
 	a.name = name
+	// TODO: check the sum is > 0
 	a.sum = sum
+	// TODO: use date struct to get the right formatting
 	a.start = start
 	a.end = end
+	// TODO: check if category exists in the database
 	a.category = category
+	// TODO: check if the value is > -2
 	a.recurrency = recurrency
 }
 
+// storeAmount stores an amount inside a specified table (Expences or Savings)
 func (a Amount) storeAmount(tableName string, itemName string) {
 	sqlAmount := fmt.Sprintf(`
 	INSERT INTO %v (
@@ -48,7 +65,8 @@ func (a Amount) storeAmount(tableName string, itemName string) {
 	storeItem(sqlAmount, itemName)
 }
 
-// updateAmount update one saving or expence
+// updateAmount update one row of Expences or Saving with the new values
+// Since both the table Expences and Saving require an extra parameter called id, this parameter has to be provided by the Saving or Expence using this method, enche why the method is not public
 func (a Amount) updateAmount(tableName string, itemName string, id int, a2 Amount) {
 	a.name = a2.name
 	a.sum = a2.sum
@@ -64,7 +82,8 @@ func (a Amount) updateAmount(tableName string, itemName string, id int, a2 Amoun
 	executeCommand(sqlUpdate, fmt.Sprintf("updating %v", itemName))
 }
 
-// deleteAmountByid deletes either an expence or a saving
+// deleteAmount deletes a row from either Savings or Expence table
+// Since both the table Expences and Saving require an extra parameter called id, this parameter has to be provided by the Saving or Expence using this method, enche why the method is not public
 func (a Amount) deleteAmount(tableName string, itemName string, id int) {
 	sqlExpence := fmt.Sprintf(`
 	DELETE FROM %v
@@ -73,7 +92,8 @@ func (a Amount) deleteAmount(tableName string, itemName string, id int) {
 	executeCommand(sqlExpence, fmt.Sprintf("delete %v", itemName))
 }
 
-// createTableAmount creates either the table for savings or expences
+// createTableAmount creates a table containg data in the form of amount and an id (primary key)
+// Used for the tables savings or expences
 func createTableAmount(tableName string) {
 	// Creting a string with the grave accent because the string contains \n
 	// YYYY-MM-DD
@@ -92,12 +112,16 @@ func createTableAmount(tableName string) {
 	executeCommand(expencesTable, fmt.Sprintf("create table %v", tableName))
 }
 
-// addAmount adds either an Expence or a Saving to the db
+// addAmount adds a row in either an Expences or a Savings table
+// tableName and itemName are needed to distinguish betwen savings and expences
 func (a Amount) addAmount(tableName string, itemName string) {
 	a.storeAmount(tableName, itemName)
 }
 
-// retriveSingleAmmount returns a sigle ammount (saving or expence)
+// retriveSingleAmmount returns a sigle ammount from either the table Expence or Savings
+// Can only be used by Expences and Savings that have to build the sql query to beforhand
+// Since there could be duplicate, the id is the only way to get a single instance of Amount
+// readingElement specifies if savings or expences are used
 func retriveSingleAmount(sqlQuery string, readingElement string) (id int, a Amount) {
 	// return the result of a select
 	row, err := db.Query(sqlQuery)
@@ -114,7 +138,8 @@ func retriveSingleAmount(sqlQuery string, readingElement string) (id int, a Amou
 	return id, a
 }
 
-// retriveManyAmounts returns all the element stored in either savings or expences
+// retriveManyAmounts returns all the rows stored in either Savings or Expences table
+// readingElement specifies if savings or expences are used
 func retriveManyAmounts(sqlQuery string, readingElement string) (ids []int, am []Amount) {
 	// return the result of a select
 	row, err := db.Query(sqlQuery)
@@ -136,7 +161,19 @@ func retriveManyAmounts(sqlQuery string, readingElement string) (ids []int, am [
 	return ids, am
 }
 
-// String to print a string with all teh values
+// String returns a string with all the data contained in the amount
 func (a Amount) String() string {
 	return fmt.Sprintf("%v %v %v %v %v %v", a.name, a.sum, a.start, a.end, a.category, a.recurrency)
+}
+
+// GetStart returns the year, month and day of the starting date
+func (a Amount) GetStart() (year int, month int, day int) {
+	if strings.Compare(a.start, "") != 0 {
+		s := strings.SplitAfter(a.start, "-")
+		year, _ = strconv.Atoi(s[0])
+		month, _ = strconv.Atoi(s[1])
+		day, _ = strconv.Atoi(s[2])
+	}
+	// TODO: an else statement managing the possibility that there isn't a start date
+	return year, month, day
 }

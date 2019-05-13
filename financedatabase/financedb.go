@@ -28,7 +28,7 @@ func InitDB(name string) {
 	createTableSavings()
 }
 
-// startdatabase initiate a connection with the database that already exist
+// connectDatabase initiate a connection with the database
 // if the database doesn't exist, it creates a new one
 // the path to the database is determined by filepath
 func connectDatabase(filepath string) (db *sql.DB) {
@@ -42,12 +42,12 @@ func connectDatabase(filepath string) (db *sql.DB) {
 	return db
 }
 
-// CLose TODO:
+// Close the connection with the databse
 func Close() {
-	db = nil
+	db.Close()
 }
 
-// executeCommand execute an sql command
+// executeCommand execute an SQL command
 func executeCommand(command string, operation string) {
 	_, err := db.Exec(command)
 	if err != nil {
@@ -55,9 +55,9 @@ func executeCommand(command string, operation string) {
 	}
 }
 
-// storeItem stores an item in a table, given a proper string
-func storeItem(item string, itemName string) {
-	statement, err := db.Prepare(item)
+// storeItem stores an item in a table, given a proper sqlStatement
+func storeItem(sqlStatement string, itemName string) {
+	statement, err := db.Prepare(sqlStatement)
 	if err != nil {
 		panic(fmt.Errorf("Error adding item %v, preparing: %v", itemName, err))
 	}

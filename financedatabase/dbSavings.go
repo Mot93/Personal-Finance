@@ -6,23 +6,25 @@ import (
 	"strings"
 )
 
-// SavingsNames avoid repetition
+// SavingsNames is a set of names that assure consistency
+// Make it esier to change names when the database is modified
 var SavingsNames = map[string]string{
 	"item":  "saving",
 	"table": "savings",
 }
 
 // createTableSavings creates the table savings if it doensn't already exist
-// recurrency is an int rapresenting the day of recurrency
-// if recurrency is set to -1 than the recurrency will be on a montly basis
 func createTableSavings() {
 	createTableAmount(SavingsNames["table"])
 }
 
-// Saving is one saving
+// Saving are stored in the databse
+// as a row containing and id and a series of data rapresented by the struct amount
 type Saving struct {
+	// id primary key in the database for expences
 	id *int
-	a  *Amount
+	// a data contained in the row
+	a *Amount
 }
 
 // Equals checks if to saving are the same
@@ -54,12 +56,12 @@ func (s Saving) delete() {
 	s.a.deleteAmount(SavingsNames["table"], SavingsNames["item"], *s.id)
 }
 
-// ReturnAmount returns the data of the saving
-func (s Saving) ReturnAmount() Amount {
+// GetAmount returns the data of the saving
+func (s Saving) GetAmount() Amount {
 	return *s.a
 }
 
-//
+// TODO:
 func (s Saving) String() string {
 	return fmt.Sprintf("%v %v", *s.id, (*s.a).String())
 }
@@ -69,12 +71,13 @@ type Savings struct {
 	savings *[]Saving
 }
 
-// TODO:
+// NewSavings TODO:
 func NewSavings() Savings {
 	sa := make([]Saving, 0, 0)
 	return Savings{savings: &sa}
 }
 
+// Get TODO:
 func (sa Savings) Get(sqlSavings string) {
 	(*sa.savings) = make([]Saving, 0, 0)
 	ids, am := retriveManyAmounts(sqlSavings, SavingsNames["name"])
@@ -134,10 +137,10 @@ func (sa Savings) Delete(s Found) {
 
 // Sum TODO:
 func (sa Savings) Sum() float32 {
-	var t float32 = 0.0
+	var t float32
 	if sa.Len() > 0 {
 		for _, s := range *sa.savings {
-			t += (s.ReturnAmount()).sum
+			t += (s.GetAmount()).sum
 		}
 	}
 	return t

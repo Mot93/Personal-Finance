@@ -15,7 +15,7 @@ func createTableCategory() {
 	executeCommand(categoryTable, "create table categories")
 }
 
-// Category in db
+// Category rapresent a row in the Categories table
 type Category string
 
 // Equals checks that two categories are the same
@@ -26,7 +26,7 @@ func (c Category) Equals(c2 Category) bool {
 	return false
 }
 
-// Delete deletes a category from categories
+// Delete a category from categories
 func (c Category) delete() {
 	sqlCategory := fmt.Sprintf(`
 	DELETE FROM categories
@@ -40,10 +40,10 @@ func (c Category) String() string {
 	return string(c)
 }
 
-// Categories is a multitude og Category
+// Categories is a collection (slice) of Category
 type Categories []Category
 
-// GetAll return the complete list of categories
+// GetAll return all the categories
 func (ca *Categories) GetAll() {
 	// Emptying the slice
 	*ca = nil
@@ -68,7 +68,7 @@ func (ca *Categories) GetAll() {
 	}
 }
 
-// Add add a category to the table categories
+// Add a category to the table Categories
 func (ca *Categories) Add(c string) {
 	sqlCategory := fmt.Sprintf(`
 	INSERT INTO categories(
@@ -79,7 +79,7 @@ func (ca *Categories) Add(c string) {
 	(*ca).GetAll()
 }
 
-// Delete deletes a category
+// Delete deletes a category from the table Categories
 func (ca *Categories) Delete(c Category) {
 	c.delete()
 	(*ca).GetAll()
