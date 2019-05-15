@@ -21,7 +21,7 @@ func createTableExpences() {
 // Expence are stored in the database
 // as a row containing and id and a series of data rapresented by the struct Amount
 type Expence struct {
-	// id primary key in the database for expences
+	// id primary key in the database for the table expences
 	id *int
 	// a data contained in the row
 	a *Amount
@@ -36,7 +36,7 @@ func (e Expence) Equals(e2 Found) bool {
 	return false
 }
 
-// EqualValue check if the have the same amount
+// EqualValue checks if the have the same amount
 // They might be different Expences
 func (e Expence) EqualValue(a Amount) bool {
 	return (*e.a).equals(a)
@@ -57,7 +57,7 @@ func (e Expence) Update(a Amount) {
 	e.store()
 }
 
-// delete an expence from the expences table
+// delete an expence from the expence table
 func (e Expence) delete() {
 	e.a.deleteAmount(ExpencesNames["table"], ExpencesNames["name"], *e.id)
 }
@@ -137,7 +137,7 @@ func (ex Expences) Len() int {
 
 // GetElement returns the Expence at the specified position
 func (ex Expences) GetElement(i int) Found {
-	// TODO: check that the i
+	// TODO: check that: -1 < i < Savings.Len()
 	return ex.expences[i]
 }
 

@@ -31,7 +31,7 @@ type Founds interface {
 	GetRecurrent()
 	// GetNonRecurrent loads all the Expence/Saving in the DB, that are non recurring
 	GetNonRecurrent()
-	// Len returns how many
+	// Len returns how many Found are in Founds
 	Len() int
 	// GetElement return a single Found a the specified position
 	GetElement(int) Found

@@ -79,7 +79,7 @@ func (ca *Categories) Add(c string) {
 	(*ca).GetAll()
 }
 
-// Delete deletes a category from the table Categories
+// Delete a category from the table Categories
 func (ca *Categories) Delete(c Category) {
 	c.delete()
 	(*ca).GetAll()

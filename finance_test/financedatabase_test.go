@@ -31,8 +31,7 @@ func TestDatabase(t *testing.T) {
 	// TESTS
 	t.Run("Category", func(t *testing.T) { DBCategory(t) })
 	t.Run("Expence", func(t *testing.T) { DBFound(t, financedatabase.NewExpences(), "Expences") })
-	// TODO: Update Saving to Found interface
-	//t.Run("Saving", func(t *testing.T) { DBFound(t, financedatabase.NewSavings(), "Savings") })
+	t.Run("Saving", func(t *testing.T) { DBFound(t, financedatabase.NewSavings(), "Savings") })
 }
 
 // closeDB erases the tadabase after testing
